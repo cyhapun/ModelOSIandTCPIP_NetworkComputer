@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <div class="header">
+        <h5 class="">Coppyright by CHP</h5>
+    </div>
+    <title>Quiz Model OSI and TCP/IP</title>
+
+    <style>
+        .header h5 {
+            font-style: italic;
+            text-align: center;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question-box {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+
+        .question {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .answers {
+            list-style: none;
+            padding: 0;
+        }
+
+        .answers li {
+            margin: 5px 0;
+        }
+
+        .btn {
+            margin-top: 15px;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: #fff;
+            background: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 20px;
+            color: #28a745;
+        }
+
+        .result.error {
+            color: #dc3545;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #28a745;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Model OSI and TCP/IP Quiz</h1>
+        <div id="quiz"></div>
+        <button class="btn" onclick="checkAnswers()">Submit</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const quizData = [{
+                "question": "Mô hình OSI được đề xuất bởi tổ chức nào?",
+                "options": ["IEEE", "ISO", "ITU", "W3C"],
+                "answer": "ISO",
+                "explanation": "Mô hình OSI được đề xuất bởi tổ chức ISO (International Organization for Standardization)."
+            },
+            {
+                "question": "Mô hình TCP/IP được định nghĩa vào năm nào?",
+                "options": ["1970", "1974", "1984", "1990"],
+                "answer": "1974",
+                "explanation": "Mô hình TCP/IP được định nghĩa bởi Cerf và Kahn vào năm 1974."
+            },
+            {
+                "question": "Lớp nào trong mô hình OSI chịu trách nhiệm về truyền dữ liệu giữa các thiết bị?",
+                "options": ["Application", "Transport", "Network", "Data Link"],
+                "answer": "Data Link",
+                "explanation": "Lớp Data Link chịu trách nhiệm về việc truyền dữ liệu giữa các thiết bị thông qua kết nối vật lý."
+            },
+            {
+                "question": "Đóng gói dữ liệu trong mạng được gọi là gì?",
+                "options": ["Fragmentation", "Encapsulation", "Encryption", "Compression"],
+                "answer": "Encapsulation",
+                "explanation": "Đóng gói dữ liệu được gọi là Encapsulation, là quá trình thêm thông tin giao thức vào dữ liệu trước khi truyền."
+            },
+            {
+                "question": "Lớp nào trong mô hình OSI quản lý các phiên của ứng dụng?",
+                "options": ["Application", "Presentation", "Session", "Transport"],
+                "answer": "Session",
+                "explanation": "Lớp Session quản lý các phiên của ứng dụng, giúp duy trì và điều khiển các phiên giao tiếp."
+            },
+            {
+                "question": "Mô hình TCP/IP có bao nhiêu lớp?",
+                "options": ["5", "4", "3", "6"],
+                "answer": "4",
+                "explanation": "Mô hình TCP/IP có 4 lớp: Application, Transport, Internet, và Network Interface."
+            },
+            {
+                "question": "Lớp nào trong mô hình TCP/IP tương ứng với lớp Network trong mô hình OSI?",
+                "options": ["Application", "Transport", "Internet", "Network Interface"],
+                "answer": "Internet",
+                "explanation": "Lớp Internet trong mô hình TCP/IP tương ứng với lớp Network trong mô hình OSI."
+            },
+            {
+                "question": "Chức năng chính của lớp Transport trong mô hình OSI là gì?",
+                "options": ["Truyền dữ liệu giữa các thiết bị", "Truyền dữ liệu end-to-end",
+                    "Quản lý phiên", "Đóng gói dữ liệu"
+                ],
+                "answer": "Truyền dữ liệu end-to-end",
+                "explanation": "Lớp Transport chịu trách nhiệm truyền dữ liệu end-to-end giữa các ứng dụng."
+            },
+            {
+                "question": "Lớp nào trong mô hình OSI đảm nhận việc định dạng và mã hóa dữ liệu?",
+                "options": ["Application", "Presentation", "Session", "Transport"],
+                "answer": "Presentation",
+                "explanation": "Lớp Presentation chịu trách nhiệm định dạng và mã hóa dữ liệu để nó có thể được hiểu bởi các ứng dụng."
+            },
+            {
+                "question": "Trong mô hình OSI, lớp nào là lớp thấp nhất?",
+                "options": ["Application", "Presentation", "Session", "Physical"],
+                "answer": "Physical",
+                "explanation": "Lớp Physical là lớp thấp nhất trong mô hình OSI, chịu trách nhiệm về các tín hiệu vật lý và truyền dẫn dữ liệu."
+            },
+            {
+                "question": "Lớp nào trong mô hình OSI có chức năng cung cấp dịch vụ mạng cho các ứng dụng?",
+                "options": ["Data Link", "Transport", "Application", "Network"],
+                "answer": "Application",
+                "explanation": "Lớp Application cung cấp các dịch vụ mạng cho các ứng dụng người dùng cuối."
+            },
+            {
+                "question": "Mô hình OSI có tổng cộng bao nhiêu lớp?",
+                "options": ["5", "6", "7", "8"],
+                "answer": "7",
+                "explanation": "Mô hình OSI có tổng cộng 7 lớp."
+            },
+            {
+                "question": "Lớp nào trong mô hình TCP/IP tương ứng với lớp Data Link trong mô hình OSI?",
+                "options": ["Application", "Transport", "Internet", "Network Interface"],
+                "answer": "Network Interface",
+                "explanation": "Lớp Network Interface trong mô hình TCP/IP tương ứng với lớp Data Link trong mô hình OSI."
+            },
+            {
+                "question": "Chức năng của lớp Network trong mô hình OSI là gì?",
+                "options": ["Quản lý phiên", "Đóng gói dữ liệu", "Định tuyến dữ liệu",
+                    "Truyền dữ liệu giữa các thiết bị"
+                ],
+                "answer": "Định tuyến dữ liệu",
+                "explanation": "Lớp Network có chức năng định tuyến dữ liệu giữa các mạng khác nhau."
+            },
+            {
+                "question": "Giao thức nào thuộc lớp Transport trong mô hình TCP/IP?",
+                "options": ["IP", "HTTP", "TCP", "FTP"],
+                "answer": "TCP",
+                "explanation": "TCP (Transmission Control Protocol) là giao thức thuộc lớp Transport trong mô hình TCP/IP."
+            },
+            {
+                "question": "Lớp nào trong mô hình OSI đảm nhận việc truyền dữ liệu giữa các máy tính?",
+                "options": ["Application", "Transport", "Network", "Data Link"],
+                "answer": "Transport",
+                "explanation": "Lớp Transport chịu trách nhiệm về việc truyền dữ liệu giữa các máy tính."
+            },
+            {
+                "question": "Giao thức nào được sử dụng để truyền tải email?",
+                "options": ["FTP", "SMTP", "HTTP", "TCP"],
+                "answer": "SMTP",
+                "explanation": "SMTP (Simple Mail Transfer Protocol) là giao thức được sử dụng để truyền tải email."
+            },
+            {
+                "question": "Lớp nào trong mô hình OSI đảm bảo việc truyền dữ liệu không bị lỗi?",
+                "options": ["Application", "Transport", "Network", "Data Link"],
+                "answer": "Transport",
+                "explanation": "Lớp Transport đảm bảo việc truyền dữ liệu không bị lỗi thông qua các cơ chế kiểm tra và khôi phục."
+            },
+            {
+                "question": "Mô hình OSI được phát triển vào năm nào?",
+                "options": ["1970", "1984", "1990", "2000"],
+                "answer": "1984",
+                "explanation": "Mô hình OSI được công bố lần đầu vào năm 1984."
+            },
+            {
+                "question": "Lớp nào trong mô hình OSI thực hiện chức năng mã hóa dữ liệu?",
+                "options": ["Application", "Presentation", "Session", "Transport"],
+                "answer": "Presentation",
+                "explanation": "Lớp Presentation thực hiện chức năng mã hóa và giải mã dữ liệu."
+            },
+            {
+                "question": "Giao thức nào thuộc lớp Internet trong mô hình TCP/IP?",
+                "options": ["TCP", "IP", "UDP", "HTTP"],
+                "answer": "IP",
+                "explanation": "IP (Internet Protocol) là giao thức thuộc lớp Internet trong mô hình TCP/IP."
+            },
+            {
+                "question": "Lớp nào trong mô hình OSI có nhiệm vụ kiểm soát truy cập mạng?",
+                "options": ["Application", "Data Link", "Network", "Transport"],
+                "answer": "Data Link",
+                "explanation": "Lớp Data Link kiểm soát truy cập mạng và đảm bảo rằng dữ liệu được truyền tải một cách chính xác giữa các thiết bị trong cùng một mạng."
+            },
+            {
+                "question": "Giao thức nào được sử dụng để truyền tải dữ liệu trên web?",
+                "options": ["FTP", "HTTP", "SMTP", "ICMP"],
+                "answer": "HTTP",
+                "explanation": "HTTP (Hypertext Transfer Protocol) là giao thức được sử dụng để truyền tải dữ liệu trên web."
+            },
+            {
+                "question": "Đâu là giao thức mạng không kết nối?",
+                "options": ["UDP", "TCP", "HTTP", "FTP"],
+                "answer": "UDP",
+                "explanation": "UDP (User Datagram Protocol) là một giao thức không kết nối, không đảm bảo việc truyền tải dữ liệu."
+            },
+            {
+                "question": "Mô hình TCP/IP có bao nhiêu lớp?",
+                "options": ["4", "5", "6", "7"],
+                "answer": "4",
+                "explanation": "Mô hình TCP/IP có 4 lớp: Application, Transport, Internet, và Network Interface."
+            },
+            {
+                "question": "Giao thức nào được sử dụng để truyền tải dữ liệu qua Internet?",
+                "options": ["TCP", "UDP", "SMTP", "FTP"],
+                "answer": "TCP",
+                "explanation": "TCP (Transmission Control Protocol) là giao thức chính được sử dụng để truyền tải dữ liệu qua Internet, đảm bảo độ tin cậy."
+            },
+            {
+                "question": "Lớp nào trong mô hình TCP/IP tương ứng với lớp Physical trong mô hình OSI?",
+                "options": ["Application", "Network Interface", "Internet", "Transport"],
+                "answer": "Network Interface",
+                "explanation": "Lớp Network Interface trong mô hình TCP/IP tương ứng với lớp Physical trong mô hình OSI."
+            },
+            {
+                "question": "Giao thức nào được sử dụng để truyền tải dữ liệu trong các mạng không dây?",
+                "options": ["Ethernet", "Wi-Fi", "TCP", "UDP"],
+                "answer": "Wi-Fi",
+                "explanation": "Wi-Fi là giao thức được sử dụng để truyền tải dữ liệu trong các mạng không dây."
+            },
+            {
+                "question": "Trong mô hình OSI, lớp nào chịu trách nhiệm về việc quản lý kết nối giữa các ứng dụng?",
+                "options": ["Application", "Presentation", "Session", "Transport"],
+                "answer": "Session",
+                "explanation": "Lớp Session chịu trách nhiệm quản lý và duy trì các kết nối giữa các ứng dụng."
+            },
+            {
+                "question": "Trong mô hình TCP/IP, lớp nào tương ứng với lớp Data Link trong mô hình OSI?",
+                "options": ["Transport", "Internet", "Network Interface", "Application"],
+                "answer": "Network Interface",
+                "explanation": "Lớp Network Interface trong mô hình TCP/IP tương ứng với lớp Data Link trong mô hình OSI, chịu trách nhiệm cho việc truyền tải dữ liệu qua các kết nối vật lý."
+            },
+            {
+                "question": "Giao thức nào được sử dụng để truyền tải tệp tin lớn qua Internet?",
+                "options": ["HTTP", "FTP", "SMTP", "SNMP"],
+                "answer": "FTP",
+                "explanation": "FTP (File Transfer Protocol) được sử dụng để truyền tải các tệp tin lớn qua Internet."
+            },
+            {
+                "question": "Lớp nào trong mô hình TCP/IP chịu trách nhiệm cho việc truyền tải dữ liệu giữa các thiết bị đầu cuối?",
+                "options": ["Application", "Transport", "Internet", "Network Interface"],
+                "answer": "Transport",
+                "explanation": "Lớp Transport trong mô hình TCP/IP chịu trách nhiệm cho việc truyền tải dữ liệu giữa các thiết bị đầu cuối."
+            },
+            {
+                "question": "Quá trình chia nhỏ dữ liệu thành các gói tin được gọi là gì?",
+                "options": ["Encapsulation", "Fragmentation", "Compression", "Encryption"],
+                "answer": "Fragmentation",
+                "explanation": "Fragmentation là quá trình chia nhỏ dữ liệu thành các gói tin để truyền tải qua mạng."
+            }
+        ];
+
+        const quizContainer = document.getElementById("quiz");
+
+        function loadQuiz() {
+            quizData.forEach((item, index) => {
+                const questionBox = document.createElement("div");
+                questionBox.classList.add("question-box");
+
+                questionBox.innerHTML = `
+          <div class="question">${index + 1}. ${item.question}</div>
+          <ul class="answers">
+            ${item.options
+              .map(
+                (option, i) =>
+                  `<li>
+                    <label>
+                      <input type="radio" name="question${index}" value="${i}">
+                      ${option}
+                    </label>
+                  </li>`
+              )
+              .join("")}
+          </ul>
+          <button class="btn" onclick="showExplanation(${index})">Xem đáp án và lời giải</button>
+          <div id="explanation${index}" class="explanation hidden">
+            Đáp án đúng: ${item.answer}<br>
+            Lời giải: ${item.explanation}
+          </div>
+        `;
+
+                quizContainer.appendChild(questionBox);
+            });
+        }
+
+        function showExplanation(index) {
+            const explanation = document.getElementById(`explanation${index}`);
+            if (explanation.classList.contains("hidden")) {
+                explanation.classList.remove("hidden");
+            } else {
+                explanation.classList.add("hidden");
+            }
+        }
+
+        const resultContainer = document.getElementById("result");
+
+        function checkAnswers() {
+            let score = 0;
+
+            quizData.forEach((item, index) => {
+                const selected = document.querySelector(
+                    `input[name="question${index}"]:checked`
+                );
+                if (selected && parseInt(selected.value) === item.correct) {
+                    score++;
+                }
+            });
+
+            if (score === quizData.length) {
+                resultContainer.textContent = `Perfect! You scored ${score}/${quizData.length}.`;
+                resultContainer.className = "result";
+            } else {
+                resultContainer.textContent = `You scored ${score}/${quizData.length}. Try again!`;
+                resultContainer.className = "result error";
+            }
+        }
+
+        loadQuiz();
+    </script>
+</body>
+
+</html>
