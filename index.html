@@ -309,10 +309,18 @@
                 "explanation": "Fragmentation là quá trình chia nhỏ dữ liệu thành các gói tin để truyền tải qua mạng."
             }
         ];
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1)); // Lấy chỉ số ngẫu nhiên
+                [array[i], array[j]] = [array[j], array[i]]; // Hoán đổi vị trí
+            }
+            return array;
+        }
 
         const quizContainer = document.getElementById("quiz");
 
         function loadQuiz() {
+            shuffleArray(quizData);
             quizData.forEach((item, index) => {
                 const questionBox = document.createElement("div");
                 questionBox.classList.add("question-box");
